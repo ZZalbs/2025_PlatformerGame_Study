@@ -6,6 +6,7 @@ public class Enemy : MonoBehaviour
 {
     private Vector2 direction;
     public int speed;
+    public float changeDelay;
     void Start()
     {
         direction = Vector2.left;
@@ -23,7 +24,7 @@ public class Enemy : MonoBehaviour
         while (true)
         {
             speed *= -1;
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(changeDelay);
         }
     }
 }

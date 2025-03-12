@@ -13,15 +13,20 @@ public class Player : MonoBehaviour
     //3
     public int jumpCount;
 
-    public int coinScore;
+    //5
+    private Animator playerAnim;
 
+    //6
+    public GameManager gm;
 
     void Start()
     {
         //2
         rb = GetComponent<Rigidbody2D>();
         jumpCount = 0;
-        coinScore = 0;
+
+        //5
+        playerAnim = GetComponent<Animator>();
     }
 
     void Update()
@@ -30,9 +35,18 @@ public class Player : MonoBehaviour
         Vector3 direction = new Vector3(Input.GetAxisRaw("Horizontal") * Time.deltaTime * speed, 0, 0);
         transform.Translate(direction);
 
+        //5
+        if (direction.x != 0)
+            playerAnim.SetBool("IsRun", true);
+        else
+            playerAnim.SetBool("IsRun", false);
+
+
         //2강. 플레이어 점프하기
         if (Input.GetKeyDown(KeyCode.Space) && jumpCount > 0)
         {
+            Debug.Log("11");
+            playerAnim.SetTrigger("IsJump");
             rb.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
             jumpCount--;
         }
@@ -43,6 +57,7 @@ public class Player : MonoBehaviour
     {
         if (collision.collider.CompareTag("Enemy"))
         {
+            gm.GameOver();
             Destroy(gameObject);
         }
         if (collision.collider.CompareTag("Ground"))
@@ -55,7 +70,11 @@ public class Player : MonoBehaviour
     {
         if (collider.CompareTag("Coin"))
         {
-            coinScore++;
+            gm.IncreaseScore();
+        }
+        if (collider.CompareTag("Goal"))
+        {
+            gm.GameClear();
         }
     }
 }
